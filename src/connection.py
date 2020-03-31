@@ -1,8 +1,7 @@
 from __future__ import annotations
-from typing import Any, Tuple, Optional, cast
+from typing import cast, Any
 from typing_extensions import Protocol
 from src.cursor import Cursor
-from src.transaction import Transaction
 
 
 class Connection(Protocol):
@@ -10,25 +9,17 @@ class Connection(Protocol):
     def cursor(self) -> Cursor:
         ...
 
-    def begin(self) -> Transaction:
-        ...
-
     def close(self) -> None:
         ...
 
-    def execute(self,
-                sql_statement: str,
-                params: Optional[Tuple] = None) -> None:
+    def commit(self) -> None:
         ...
 
-    def executemany(self, sql_statement: str) -> None:
+    def __enter__(self) -> Connection:
         ...
-
-    def __enter__(self, *args: Any, **kwargs: Any) -> Connection:
-        return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        self.close()
+        ...
 
 
 def connection(conn_str: str) -> Connection:
@@ -41,7 +32,8 @@ def connection(conn_str: str) -> Connection:
 
     def conn_sqlite() -> Connection:
         from sqlite3 import connect
-        return cast(Connection, connect(conn_str))
+        # this transforms "sqlite://:memory:" => ":memory:"
+        return cast(Connection, connect(conn_str[len('sqlite://'):]))
 
     def conn_postgres() -> Connection:
         from psycopg2 import connect
@@ -50,6 +42,7 @@ def connection(conn_str: str) -> Connection:
     def conn_unknown() -> Connection:
         raise RuntimeError("Unsupported DB type in connection string")
 
-    switcher = {"sqlite3": conn_sqlite, "postgres": conn_postgres}
+    switcher = {"sqlite": conn_sqlite, "postgres": conn_postgres}
+    db_type = conn_str.split(':')[0]
 
-    return switcher.get(conn_str.split(':')[0], conn_unknown)()
+    return switcher.get(db_type, conn_unknown)()

@@ -24,40 +24,40 @@ class MigrationTool:
         Safe to call multiple times
         """
         with connection(self.conn_str) as conn:
-            conn.execute(f"""
+            cursor = conn.cursor()
+            cursor.execute(f"""
                 CREATE TABLE {self.schema_table} (
                     id INTEGER,
                     migration VARCHAR(128),
                     applied_timestamp INTEGER
                 );
             """)
+            conn.commit()
         logging.info(f"Migration database table created as {self.schema_table}")
 
     def find_applied_migrations(self) -> List[str]:
         with connection(self.conn_str) as conn:
             cursor = conn.cursor()
             cursor.execute(f"SELECT * FROM {self.schema_table}")
+            conn.commit()
             return [x["name"] for x in cursor.fetchall()]
 
     def _run_migration(self, migration: str) -> None:
         with open(path.join(self.migration_dir, migration), "r") as f:
             sql_statement = f.read()
 
-        conn = connection(self.conn_str)
-        trans = conn.begin()
-
         try:
-            conn.execute(sql_statement)
-            conn.execute(
-                f"INSERT INTO {self.schema_table} (migration, applied_timestamp) VALUES ?, ?",
-                (
-                    migration,
-                    datetime.now(),
-                ))
-
-            trans.commit()
+            with connection(self.conn_str) as conn:
+                cursor = conn.cursor()
+                cursor.execute(sql_statement)
+                cursor.execute(
+                    f"INSERT INTO {self.schema_table} (migration, applied_timestamp) VALUES ?, ?",
+                    (
+                        migration,
+                        datetime.now(),
+                    ))
+                conn.commit()
         except Exception as e:
-            trans.rollback()
             logging.exception(f"Failed to perform SQL transaction\n{str(e)}")
             raise
 
@@ -73,6 +73,7 @@ class MigrationTool:
 
             try:
                 self._run_migration(migration)
+                logging.info(f"Applied migration: {migration}")
             except Exception as e:
                 logging.exception(f"Failed to apply migration: {migration}")
                 logging.exception(str(e))

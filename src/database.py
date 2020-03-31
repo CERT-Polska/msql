@@ -25,6 +25,7 @@ class Database:
 
     def migrate(self) -> None:
         self.migration_tool.install()
+        self.migration_tool.apply_migrations()
 
     def connection(self) -> Connection:
         return connection(self.conn_str)

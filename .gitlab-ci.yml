@@ -1,0 +1,23 @@
+stages:
+  - test
+
+test_code:
+  image: python:3.8
+  script:
+    - pip3 install -r requirements.txt
+    - python3 -m unittest discover
+  stage: test
+
+test_style:
+  image: python:3.8
+  script:
+    - pip3 install flake8
+    - flake8 src
+  stage: test
+
+test_types:
+  image: python:3.8
+  script:
+    - pip3 install mypy
+    - mypy src
+  stage: test

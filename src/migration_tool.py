@@ -7,10 +7,7 @@ from src.connection import connection
 
 class MigrationTool:
 
-    def __init__(self,
-                 conn_str: str,
-                 migration_dir: str,
-                 schema_table: str = "morm_migration") -> None:
+    def __init__(self, conn_str: str, migration_dir: str, schema_table: str = "morm_migration") -> None:
         self.conn_str = conn_str
         self.migration_dir = migration_dir
         self.schema_table = schema_table
@@ -51,20 +48,16 @@ class MigrationTool:
                 if hasattr(cursor, "executescript"):
                     # sqlite is ret..., different
                     cursor.executescript(sql_statement)  # type: ignore
-                    cursor.execute(
-                        f"INSERT INTO {self.schema_table} (migration, applied_timestamp) VALUES (?, ?);",
-                        (
-                            migration,
-                            time(),
-                        ))
+                    cursor.execute(f"INSERT INTO {self.schema_table} (migration, applied_timestamp) VALUES (?, ?);", (
+                        migration,
+                        time(),
+                    ))
                 else:
                     cursor.execute(sql_statement)
-                    cursor.execute(
-                        f"INSERT INTO {self.schema_table} (migration, applied_timestamp) VALUES (%s, %s);",
-                        (
-                            migration,
-                            time(),
-                        ))
+                    cursor.execute(f"INSERT INTO {self.schema_table} (migration, applied_timestamp) VALUES (%s, %s);", (
+                        migration,
+                        time(),
+                    ))
                 conn.commit()
         except Exception as e:
             logging.exception(f"Failed to perform SQL transaction\n{str(e)}")

@@ -34,17 +34,12 @@ class Resource(Generic[T], metaclass=ABCMeta):
     def TABLE_ALIAS(self) -> str:
         raise NotImplementedError()
 
-    def select(self,
-               suffix: str = "",
-               params: Tuple = (),
-               mod: str = "") -> List[T]:
+    def select(self, suffix: str = "", params: Tuple = (), mod: str = "") -> List[T]:
         result = []
         with self._db.connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT {} {} FROM {} {} {}".format(mod, self.SELECT,
-                                                    self.TABLE,
-                                                    self.TABLE_ALIAS, suffix),
+                "SELECT {} {} FROM {} {} {}".format(mod, self.SELECT, self.TABLE, self.TABLE_ALIAS, suffix),
                 params,
             )
             for row in cursor.fetchall():
@@ -57,14 +52,11 @@ class Resource(Generic[T], metaclass=ABCMeta):
             raise RuntimeError(f"Query on {self.TABLE} returned zero results")
         return result
 
-    def select_one_or_none(self,
-                           suffix: str = "",
-                           params: Tuple = ()) -> Optional[T]:
+    def select_one_or_none(self, suffix: str = "", params: Tuple = ()) -> Optional[T]:
         with self._db.connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT {} FROM {} {} {}".format(self.SELECT, self.TABLE,
-                                                 self.TABLE_ALIAS, suffix),
+                "SELECT {} FROM {} {} {}".format(self.SELECT, self.TABLE, self.TABLE_ALIAS, suffix),
                 params,
             )
             result = cursor.fetchone()

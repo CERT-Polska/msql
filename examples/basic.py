@@ -33,14 +33,18 @@ class BasicDb(Database):
     def insert_basic(self, basic: BasicData) -> None:
         with self.connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("""
+            cursor.execute(
+                """
             INSERT INTO basic (
                 id,
                 name
             ) VALUES (
                 ?,
                 ?
-            )""", (basic.id, basic.name,))
+            )""", (
+                    basic.id,
+                    basic.name,
+                ))
             conn.commit()
 
     def delete_basic(self, basic: BasicData) -> None:

@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from os import path
+from os import path, listdir
 from typing import List
 from src.connection import connection
 
@@ -16,7 +16,7 @@ class MigrationTool:
         self.schema_table = schema_table
 
     def find_migrations(self) -> List[str]:
-        pass
+        return [x for x in listdir(self.migration_dir) if x.endswith(".sql")]
 
     def install(self) -> None:
         """
@@ -26,7 +26,7 @@ class MigrationTool:
         with connection(self.conn_str) as conn:
             cursor = conn.cursor()
             cursor.execute(f"""
-                CREATE TABLE {self.schema_table} (
+                CREATE TABLE IF NOT EXISTS {self.schema_table} (
                     id INTEGER,
                     migration VARCHAR(128),
                     applied_timestamp INTEGER
@@ -38,9 +38,8 @@ class MigrationTool:
     def find_applied_migrations(self) -> List[str]:
         with connection(self.conn_str) as conn:
             cursor = conn.cursor()
-            cursor.execute(f"SELECT * FROM {self.schema_table}")
-            conn.commit()
-            return [x["name"] for x in cursor.fetchall()]
+            cursor.execute(f"SELECT * FROM {self.schema_table};")
+            return [x[1] for x in cursor.fetchall()]
 
     def _run_migration(self, migration: str) -> None:
         with open(path.join(self.migration_dir, migration), "r") as f:
@@ -49,9 +48,9 @@ class MigrationTool:
         try:
             with connection(self.conn_str) as conn:
                 cursor = conn.cursor()
-                cursor.execute(sql_statement)
+                cursor.executescript(sql_statement)
                 cursor.execute(
-                    f"INSERT INTO {self.schema_table} (migration, applied_timestamp) VALUES ?, ?",
+                    f"INSERT INTO {self.schema_table} (migration, applied_timestamp) VALUES (?, ?);",
                     (
                         migration,
                         datetime.now(),

@@ -1,7 +1,6 @@
 import os
 from unittest import TestCase
-
-from src import Database
+from tests import TestDb
 
 
 class TestPostgres(TestCase):
@@ -11,12 +10,6 @@ class TestPostgres(TestCase):
         username = os.getenv("POSTGRES_USER", "morm")
         password = os.getenv("POSTGRES_PASSWORD", "hunter2")
         database = os.getenv("POSTGRES_DB", "morm")
-        self.db = PostgresDb(
+        self.db = TestDb(
             f"postgres://{username}:{password}@{host}/{database}")
         self.db.migrate()
-
-
-class PostgresDb(Database):
-
-    def __init__(self, conn_str: str) -> None:
-        super().__init__(conn_str, "./migrations")

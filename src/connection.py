@@ -22,6 +22,10 @@ class Connection(Protocol):
         ...
 
 
+# sadly we need to hold in memory connections
+global_sqlite_memory_conn = None
+
+
 def connection(conn_str: str) -> Connection:
     """
     Main factory that creates connections.
@@ -32,8 +36,20 @@ def connection(conn_str: str) -> Connection:
 
     def conn_sqlite() -> Connection:
         from sqlite3 import connect
+        global global_sqlite_memory_conn
+
         # this transforms "sqlite://:memory:" => ":memory:"
-        return cast(Connection, connect(conn_str[len('sqlite://'):]))
+        name = conn_str[len('sqlite://'):]
+
+        conn = cast(Connection, connect(name))
+
+        # if memory, we need to hold one connection
+        if name == ":memory:":
+            if global_sqlite_memory_conn is None:
+                global_sqlite_memory_conn = conn
+            return global_sqlite_memory_conn
+        else:
+            return conn
 
     def conn_postgres() -> Connection:
         from psycopg2 import connect

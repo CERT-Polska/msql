@@ -1,5 +1,6 @@
 from morm import Database, Resource
 from os import path
+from typing import List
 
 
 class BasicData:
@@ -22,6 +23,12 @@ class BasicDb(Database):
         # we can use any connection string here
         super().__init__("sqlite://:memory:", path.join(path.dirname(__file__), "migrations"))
         self.basic = BasicResource(self)
+
+    def select_all_basic(self) -> List[BasicData]:
+        return self.basic.select()
+
+    def select_basic_by_id(self, basic_id: int) -> BasicData:
+        return self.basic.select("WHERE b.id = ?", (basic_id,))
 
     def insert_basic(self, basic: BasicData) -> None:
         with self.connection() as conn:

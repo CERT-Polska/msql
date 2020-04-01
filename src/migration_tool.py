@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from time import time
 from os import path, listdir
 from typing import List
 from src.connection import connection
@@ -56,7 +56,7 @@ class MigrationTool:
                     f"INSERT INTO {self.schema_table} (migration, applied_timestamp) VALUES (%s, %s);",
                     (
                         migration,
-                        datetime.now(),
+                        time(),
                     ))
                 conn.commit()
         except Exception as e:

@@ -53,7 +53,7 @@ class MigrationTool:
                 else:
                     cursor.execute(sql_statement)
                 cursor.execute(
-                    f"INSERT INTO {self.schema_table} (migration, applied_timestamp) VALUES (?, ?);",
+                    f"INSERT INTO {self.schema_table} (migration, applied_timestamp) VALUES (%s, %s);",
                     (
                         migration,
                         datetime.now(),

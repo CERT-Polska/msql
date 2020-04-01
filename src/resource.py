@@ -51,9 +51,6 @@ class Resource(Generic[T], metaclass=ABCMeta):
                 result.append(self.CLASS(*row))
         return result
 
-    def select_distinct(self, suffix: str = "", params: Tuple = ()) -> List[T]:
-        return self.select(suffix, params, mod="DISTINCT")
-
     def select_one(self, suffix: str = "", params: Tuple = ()) -> T:
         result = self.select_one_or_none(suffix, params)
         if not result:

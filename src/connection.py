@@ -37,9 +37,6 @@ def connection(conn_str: str) -> Connection:
 
     def conn_postgres() -> Connection:
         from psycopg2 import connect
-        conn = connect(conn_str)
-        # small hack to unify APIs
-        setattr(conn, "executescript", conn.execute)
         return cast(Connection, connect(conn_str))
 
     def conn_unknown() -> Connection:

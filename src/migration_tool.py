@@ -48,7 +48,10 @@ class MigrationTool:
         try:
             with connection(self.conn_str) as conn:
                 cursor = conn.cursor()
-                cursor.executescript(sql_statement)
+                if hasattr(cursor, "executescript"):
+                    cursor.executescript(sql_statement)  # type: ignore
+                else:
+                    cursor.execute(sql_statement)
                 cursor.execute(
                     f"INSERT INTO {self.schema_table} (migration, applied_timestamp) VALUES (?, ?);",
                     (

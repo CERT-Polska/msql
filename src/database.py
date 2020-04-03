@@ -3,7 +3,7 @@ from __future__ import annotations
 from functools import wraps
 from typing import Callable, Tuple, cast, Any
 
-from src import Cursor
+from src.cursor import Cursor
 from src.connection import Connection, connection
 from src.migration_tool import MigrationTool
 

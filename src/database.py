@@ -1,23 +1,37 @@
 from __future__ import annotations
-from typing import List, Callable, Any
 
+from functools import wraps
+from typing import Callable, Tuple, cast, Any
+
+from src import Cursor
 from src.connection import Connection, connection
 from src.migration_tool import MigrationTool
 
 
-def tolist(func: Callable[..., List]) -> Callable[..., List]:
+class _ContextHelper:
 
-    def wrapper(*args: Any, **kwargs: Any) -> List:
-        return list(func(*args, **kwargs))
+    def __init__(self, db: Database):
+        self.db = db
 
-    return wrapper
+    def __enter__(self) -> Cursor:
+        self.conn = self.db.connection()
+        return self.conn.cursor()
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        if self.db.auto_commit:
+            self.conn.commit()
 
 
 class Database:
 
-    def __init__(self, conn_str: str, migration_dir: str, schema_table: str = "msql_migration") -> None:
+    def __init__(self,
+                 conn_str: str,
+                 migration_dir: str,
+                 schema_table: str = "msql_migration",
+                 auto_commit: bool = True) -> None:
         self.conn_str = conn_str
         self.migration_tool = MigrationTool(conn_str, migration_dir, schema_table)
+        self.auto_commit = auto_commit
 
     def migrate(self) -> None:
         self.migration_tool.install()
@@ -25,3 +39,19 @@ class Database:
 
     def connection(self) -> Connection:
         return connection(self.conn_str)
+
+    @staticmethod
+    def with_cursor(f: Callable) -> Callable:
+
+        @wraps(f)
+        def wrapper(*args: Tuple) -> None:
+            db = cast(Database, args[0])
+            with db.connection() as conn:
+                f(cursor=conn.cursor())
+                if db.auto_commit:
+                    conn.commit()
+
+        return wrapper
+
+    def get_cursor(self) -> _ContextHelper:
+        return _ContextHelper(self)

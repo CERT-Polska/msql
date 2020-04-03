@@ -1,9 +1,5 @@
-CREATE TABLE binaries (
+CREATE TABLE example (
     id INTEGER,
-    sha256 TEXT,
+    name VARCHAR(64),
     PRIMARY KEY (id)
-);
-
-CREATE UNIQUE INDEX ndx__binary__sha256 ON binaries (
-    sha256
 );

@@ -1,6 +1,6 @@
-from msql import BaseDb
+from msql import BaseDb, Connection, Cursor
 from os import path
-from typing import List, cast, Callable
+from typing import List
 
 
 class Basic:
@@ -16,38 +16,30 @@ class Database(BaseDb):
         # we can use any connection string here
         super().__init__("sqlite://:memory:", path.join(path.dirname(__file__), "migrations"))
 
-    def select_all_basic(self) -> List[Basic]:
-        with self.connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM basic")
-            return cast(List[Basic], cursor.fetchall())
+    @BaseDb.with_cursor
+    def select_all_basic(self, cursor: Cursor) -> List[Basic]:
+        cursor.execute("SELECT * FROM basic")
+        return [Basic(**x) for x in cursor.fetchall()]
 
     def select_basic_by_id(self, basic_id: int) -> Basic:
-        with self.connection() as conn:
-            cursor = conn.cursor()
+        with self.get_cursor() as cursor:
             cursor.execute("SELECT * FROM basic WHERE id = ?", (basic_id,))
-            return cast(Basic, cursor.fetchone())
+            return Basic(**cursor.fetchone())
 
     def insert_basic(self, basic: Basic) -> None:
-        with self.connection() as conn:
-            cursor = conn.cursor()
+        with self.get_cursor() as cursor:
             cursor.execute("INSERT INTO basic (id, name) VALUES (?, ?)", (
                 basic.id,
                 basic.name,
             ))
-            conn.commit()
 
-    def update_basic(self, basic: Basic) -> None:
-        with self.connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute("UPDATE basic SET name = ? WHERE id = ?", (
-                basic.name,
-                basic.id,
-            ))
-            conn.commit()
+    @BaseDb.with_cursor
+    def update_basic(self, basic: Basic, cursor: Cursor) -> None:
+        cursor.execute("UPDATE basic SET name = ? WHERE id = ?", (
+            basic.name,
+            basic.id,
+        ))
 
-    def delete_basic_by_id(self, basic_id: int) -> None:
-        with self.connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute("DELETE FROM basic WHERE id = ?", (basic_id,))
-            conn.commit()
+    @BaseDb.with_cursor
+    def delete_basic_by_id(self, basic_id: int, cursor: Connection) -> None:
+        cursor.execute("DELETE FROM basic WHERE id = ?", (basic_id,))

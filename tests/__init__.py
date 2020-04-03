@@ -1,5 +1,14 @@
+from typing import List, cast
+
 from src import BaseDb
 from os import path
+
+
+class Example:
+
+    def __init__(self, example_id: int, name: str) -> None:
+        self.id = example_id
+        self.name = name
 
 
 class TestDb(BaseDb):

@@ -13,7 +13,7 @@ class MigrationTool:
         self.schema_table = schema_table
 
     def find_migrations(self) -> List[str]:
-        return [x for x in listdir(self.migration_dir) if x.endswith(".sql")]
+        return sorted([x for x in listdir(self.migration_dir) if x.endswith(".sql")])
 
     def install(self) -> None:
         """

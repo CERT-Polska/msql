@@ -1,5 +1,5 @@
 import os
-from typing import List, Optional, cast
+from typing import List, Optional
 from unittest import TestCase
 from tests import TestDb, Example
 

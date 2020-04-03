@@ -15,6 +15,7 @@ test_code:
   script:
     - apt-get update && apt-get install -y sqlite3
     - pip3 install -r requirements.txt
+    - pip3 install pydantic
     - python3 -m unittest discover
   stage: test
 
@@ -22,12 +23,12 @@ test_style:
   image: python:3.8
   script:
     - pip3 install flake8
-    - flake8 src
+    - flake8 examples src tests
   stage: test
 
 test_types:
   image: python:3.8
   script:
-    - pip3 install mypy
-    - mypy src
+    - pip3 install mypy pydantic
+    - mypy src tests
   stage: test

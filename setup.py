@@ -15,6 +15,9 @@ setup(
     license="GPLv3",
     include_package_data=True,
     install_requires=open("requirements.txt").read().splitlines(),
+    extras_require={
+        'pydantic': 'pydantic'
+    },
     classifiers=[
         "Programming Language :: Python"
     ]

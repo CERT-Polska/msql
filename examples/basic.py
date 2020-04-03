@@ -1,6 +1,6 @@
 from msql import BaseDb, Connection, Cursor
 from os import path
-from typing import List
+from typing import List, Optional
 
 
 class Basic:
@@ -19,12 +19,16 @@ class Database(BaseDb):
     @BaseDb.with_cursor
     def select_all_basic(self, cursor: Cursor) -> List[Basic]:
         cursor.execute("SELECT * FROM basic")
-        return [Basic(**x) for x in cursor.fetchall()]
+        return [Basic(*x) for x in cursor.fetchall()]
 
-    def select_basic_by_id(self, basic_id: int) -> Basic:
+    def select_basic_by_id(self, basic_id: int) -> Optional[Basic]:
         with self.get_cursor() as cursor:
             cursor.execute("SELECT * FROM basic WHERE id = ?", (basic_id,))
-            return Basic(**cursor.fetchone())
+            basic = cursor.fetchone()
+            if basic:
+                return Basic(*basic)
+            else:
+                return None
 
     def insert_basic(self, basic: Basic) -> None:
         with self.get_cursor() as cursor:

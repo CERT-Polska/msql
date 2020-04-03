@@ -7,7 +7,7 @@ from src.connection import connection
 
 class MigrationTool:
 
-    def __init__(self, conn_str: str, migration_dir: str, schema_table: str = "morm_migration") -> None:
+    def __init__(self, conn_str: str, migration_dir: str, schema_table: str = "msql_migration") -> None:
         self.conn_str = conn_str
         self.migration_dir = migration_dir
         self.schema_table = schema_table

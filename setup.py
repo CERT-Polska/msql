@@ -6,12 +6,12 @@ except ImportError:
     from distutils.core import setup
 
 setup(
-    name="morm",
+    name="msql",
     version="1.0.0",
-    description="Simple ORM with automatic migrations.",
+    description="Simple DSL with automatic migrations.",
     author="CERT Polska",
     author_email="info@cert.pl",
-    packages=["morm"],
+    packages=["msql"],
     license="GPLv3",
     include_package_data=True,
     install_requires=open("requirements.txt").read().splitlines(),

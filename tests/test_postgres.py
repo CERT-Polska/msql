@@ -15,7 +15,8 @@ class TestPostgres(TestCase):
     def tearDown(self) -> None:
         conn = self.db.connection()
         cursor = conn.cursor()
-        cursor.execute("DROP TABLE morm_migration,binaries;")
+        cursor.execute("DROP TABLE msql_migration,binaries;")
+        conn.commit()
 
     def test_migrate(self) -> None:
         self.db.migrate()

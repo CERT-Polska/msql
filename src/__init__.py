@@ -1,4 +1,3 @@
-from src.database import Database
-from src.resource import Resource
+from src.database import Database as BaseDb
 
-__all__ = ["Database", "Resource"]
+__all__ = ["BaseDb"]

@@ -1,6 +1,6 @@
-# morm
+# msql
 
-Very simple and barebone ORM with migrations.
+Very simple and barebone DSL with migrations.
 
 ### Usage
 

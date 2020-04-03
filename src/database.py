@@ -15,7 +15,7 @@ def tolist(func: Callable[..., List]) -> Callable[..., List]:
 
 class Database:
 
-    def __init__(self, conn_str: str, migration_dir: str, schema_table: str = "morm_migration") -> None:
+    def __init__(self, conn_str: str, migration_dir: str, schema_table: str = "msql_migration") -> None:
         self.conn_str = conn_str
         self.migration_tool = MigrationTool(conn_str, migration_dir, schema_table)
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List, Tuple
 from unittest import TestCase
-from src.ext.pydantic import to_pydantic_model, to_pydantic_model_list
+from msql.ext.pydantic import to_pydantic_model, to_pydantic_model_list
 from pydantic import BaseModel
 
 

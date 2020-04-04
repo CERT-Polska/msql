@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup
 
 setup(
     name="msql",
@@ -11,7 +8,7 @@ setup(
     description="Simple DSL with automatic migrations.",
     author="CERT Polska",
     author_email="info@cert.pl",
-    packages=["msql"],
+    packages=["msql", "msql.ext"],
     license="GPLv3",
     include_package_data=True,
     install_requires=open("requirements.txt").read().splitlines(),

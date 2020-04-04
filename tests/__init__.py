@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from src import BaseDb
+from msql import BaseDb
 from os import path
 
 

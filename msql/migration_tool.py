@@ -2,7 +2,7 @@ import logging
 from time import time
 from os import path, listdir
 from typing import List
-from src.connection import connection
+from msql.connection import connection
 
 
 class MigrationTool:

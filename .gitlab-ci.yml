@@ -23,12 +23,12 @@ test_style:
   image: python:3.8
   script:
     - pip3 install flake8
-    - flake8 examples src tests
+    - flake8 examples msql tests
   stage: test
 
 test_types:
   image: python:3.8
   script:
     - pip3 install mypy pydantic
-    - mypy src tests
+    - mypy msql tests
   stage: test

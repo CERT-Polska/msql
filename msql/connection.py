@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import cast, Any
 from typing_extensions import Protocol
-from src.cursor import Cursor
+from msql.cursor import Cursor
 
 
 class Connection(Protocol):

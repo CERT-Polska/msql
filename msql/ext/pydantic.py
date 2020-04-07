@@ -1,5 +1,5 @@
 import logging
-from typing import Tuple, TypeVar, List, Dict, Any, Type, Optional
+from typing import Tuple, TypeVar, List, Dict, Any, Type, Optional, cast
 
 try:
     from pydantic import BaseModel
@@ -19,4 +19,4 @@ def to_pydantic_model(schema: Type[T], data: Tuple) -> Optional[T]:
 
 
 def to_pydantic_list(schema: Type[T], data: List[Tuple]) -> List[T]:
-    return [to_pydantic_model(schema, x) for x in data]
+    return [cast(T, to_pydantic_model(schema, x)) for x in data]

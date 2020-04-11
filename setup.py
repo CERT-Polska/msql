@@ -7,7 +7,7 @@ except ImportError:
 
 setup(
     name="msql",
-    version="1.0.0",
+    version="1.0.1",
     description="Simple DSL with automatic migrations.",
     author="CERT Polska",
     author_email="info@cert.pl",

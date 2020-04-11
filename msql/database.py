@@ -40,18 +40,6 @@ class Database:
     def connection(self) -> Connection:
         return connection(self.conn_str)
 
-    @staticmethod
-    def with_cursor(f: Callable) -> Callable:
-
-        @wraps(f)
-        def wrapper(*args: Tuple) -> None:
-            db = cast(Database, args[0])
-            with db.connection() as conn:
-                f(cursor=conn.cursor())
-                if db.auto_commit:
-                    conn.commit()
-
-        return wrapper
-
     def get_cursor(self) -> _ContextHelper:
         return _ContextHelper(self)
+

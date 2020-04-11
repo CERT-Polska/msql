@@ -16,10 +16,10 @@ class Database(BaseDb):
         # we can use any connection string here
         super().__init__("sqlite://:memory:", path.join(path.dirname(__file__), "migrations"))
 
-    @BaseDb.with_cursor
     def select_all_basic(self, cursor: Cursor) -> List[Basic]:
-        cursor.execute("SELECT * FROM basic")
-        return [Basic(*x) for x in cursor.fetchall()]
+        with self.get_cursor() as cursor:
+            cursor.execute("SELECT * FROM basic")
+            return [Basic(*x) for x in cursor.fetchall()]
 
     def select_basic_by_id(self, basic_id: int) -> Optional[Basic]:
         with self.get_cursor() as cursor:
@@ -37,13 +37,14 @@ class Database(BaseDb):
                 basic.name,
             ))
 
-    @BaseDb.with_cursor
     def update_basic(self, basic: Basic, cursor: Cursor) -> None:
-        cursor.execute("UPDATE basic SET name = ? WHERE id = ?", (
-            basic.name,
-            basic.id,
-        ))
+        with self.get_cursor() as cursor:
+            cursor.execute("UPDATE basic SET name = ? WHERE id = ?", (
+                basic.name,
+                basic.id,
+            ))
 
-    @BaseDb.with_cursor
     def delete_basic_by_id(self, basic_id: int, cursor: Connection) -> None:
-        cursor.execute("DELETE FROM basic WHERE id = ?", (basic_id,))
+        with self.get_cursor() as cursor:
+            cursor.execute("DELETE FROM basic WHERE id = ?", (basic_id,))
+

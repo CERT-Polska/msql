@@ -9,7 +9,7 @@ except ModuleNotFoundError:
 T = TypeVar("T", bound=BaseModel)
 
 
-def to_pydantic_model(schema: Type[T], data: Tuple) -> Optional[T]:
+def to_pydantic_model(schema: Type[T], data: Optional[Tuple]) -> Optional[T]:
     if not data:
         return None
     ret: Dict[str, Any] = {}

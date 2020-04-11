@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from functools import wraps
-from typing import Callable, Tuple, cast, Any
+from typing import Any
 
 from msql.cursor import Cursor
 from msql.connection import Connection, connection
@@ -42,4 +41,3 @@ class Database:
 
     def get_cursor(self) -> _ContextHelper:
         return _ContextHelper(self)
-

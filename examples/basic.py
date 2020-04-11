@@ -47,4 +47,3 @@ class Database(BaseDb):
     def delete_basic_by_id(self, basic_id: int, cursor: Connection) -> None:
         with self.get_cursor() as cursor:
             cursor.execute("DELETE FROM basic WHERE id = ?", (basic_id,))
-

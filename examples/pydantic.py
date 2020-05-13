@@ -1,13 +1,12 @@
 from msql import BaseDb
 from os import path
 from typing import List, Optional
+from pydantic import BaseModel
 
 
-class Basic:
-
-    def __init__(self, basic_id: int, name: str) -> None:
-        self.id = basic_id
-        self.name = name
+class Basic(BaseModel):
+    id: int
+    name: str
 
 
 class Database(BaseDb):
@@ -19,14 +18,14 @@ class Database(BaseDb):
     def select_all_basic(self) -> List[Basic]:
         with self.get_cursor() as cursor:
             cursor.execute("SELECT * FROM basic")
-            return [Basic(*x.values()) for x in cursor.fetchall()]
+            return [Basic.parse_obj(x) for x in cursor.fetchall()]
 
     def select_basic_by_id(self, basic_id: int) -> Optional[Basic]:
         with self.get_cursor() as cursor:
             cursor.execute("SELECT * FROM basic WHERE id = ?", (basic_id,))
             basic = cursor.fetchone()
             if basic:
-                return Basic(*basic.values())
+                return Basic.parse_obj(basic)
             else:
                 return None
 

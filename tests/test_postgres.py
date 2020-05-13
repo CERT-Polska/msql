@@ -9,14 +9,14 @@ class PostgresTestDb(TestDb):
     def get_all_example(self) -> List[Example]:
         with self.get_cursor() as cursor:
             cursor.execute("SELECT * FROM example;")
-            return [Example(*x) for x in cursor.fetchall()]
+            return [Example(*x.values()) for x in cursor.fetchall()]
 
     def get_example_by_id(self, example_id: int) -> Optional[Example]:
         with self.get_cursor() as cursor:
             cursor.execute("SELECT * FROM example WHERE id = %s;", (example_id,))
             example = cursor.fetchone()
             if example:
-                return Example(*example)
+                return Example(*example.values())
             else:
                 return None
 

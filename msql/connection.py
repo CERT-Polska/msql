@@ -3,6 +3,10 @@ from typing import cast, Any
 from typing_extensions import Protocol
 from msql.cursor import Cursor
 
+import psycopg2
+import psycopg2.extras
+import sqlite3
+
 
 class Connection(Protocol):
 
@@ -35,13 +39,13 @@ def connection(conn_str: str) -> Connection:
     """
 
     def conn_sqlite() -> Connection:
-        from sqlite3 import connect
         global global_sqlite_memory_conn
 
         # this transforms "sqlite://:memory:" => ":memory:"
         name = conn_str[len('sqlite://'):]
 
-        conn = cast(Connection, connect(name))
+        conn = cast(Connection, sqlite3.connect(name))
+        conn.row_factory = sqlite3.Row  # type: ignore
 
         # if memory, we need to hold one connection
         if name == ":memory:":
@@ -52,8 +56,7 @@ def connection(conn_str: str) -> Connection:
             return conn
 
     def conn_postgres() -> Connection:
-        from psycopg2 import connect
-        return cast(Connection, connect(conn_str))
+        return cast(Connection, psycopg2.connect(conn_str, cursor_factory=psycopg2.extras.DictCursor))
 
     def conn_unknown() -> Connection:
         raise RuntimeError("Unsupported DB type in connection string")

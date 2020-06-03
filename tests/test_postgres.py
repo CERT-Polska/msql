@@ -42,7 +42,7 @@ class TestPostgres(TestCase):
         username = os.getenv("POSTGRES_USER", "msql")
         password = os.getenv("POSTGRES_PASSWORD", "hunter2")
         database = os.getenv("POSTGRES_DB", "msql")
-        self.db = PostgresTestDb(f"postgres://{username}:{password}@{host}/{database}")
+        self.db = PostgresTestDb(f"postgresql://{username}:{password}@{host}/{database}")
 
     def tearDown(self) -> None:
         conn = self.db.connection()

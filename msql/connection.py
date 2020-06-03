@@ -61,7 +61,7 @@ def connection(conn_str: str) -> Connection:
     def conn_unknown() -> Connection:
         raise RuntimeError("Unsupported DB type in connection string")
 
-    switcher = {"sqlite": conn_sqlite, "postgres": conn_postgres}
+    switcher = {"sqlite": conn_sqlite, "postgresql": conn_postgres}
     db_type = conn_str.split(':')[0]
 
     return switcher.get(db_type, conn_unknown)()

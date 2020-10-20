@@ -15,7 +15,7 @@ test_code:
   script:
     - apt-get update && apt-get install -y sqlite3
     - pip3 install -r requirements.txt
-    - pip3 install pydantic
+    - pip3 install pydantic psycopg2
     - python3 -m unittest discover
   stage: test
 

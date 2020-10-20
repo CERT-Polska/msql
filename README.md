@@ -11,4 +11,4 @@ In case of sqlite3 you need to add a `sqlite://` prefix.
 
 ### Info
 
-**Osoby kontaktowe**: Bonus, msm
+contact email: bonus@cert.pl

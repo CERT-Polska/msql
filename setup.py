@@ -7,7 +7,7 @@ except ImportError:
 
 setup(
     name="msql",
-    version="1.2.1",
+    version="1.2.2",
     description="Simple DSL with automatic migrations.",
     author="CERT Polska",
     author_email="info@cert.pl",
@@ -17,5 +17,5 @@ setup(
     include_package_data=True,
     install_requires=open("requirements.txt").read().splitlines(),
     zip_safe=False,  # https://mypy.readthedocs.io/en/latest/installed_packages.html#making-pep-561-compatible-packages
-    extras_require={"postgresql": ["psycopg2-binary==2.7.3.2"]},
+    extras_require={"postgresql": ["psycopg2-binary"]},
     classifiers=["Programming Language :: Python"])
